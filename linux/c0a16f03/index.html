@@ -1,0 +1,317 @@
+<!DOCTYPE html><html class="theme-next pisces use-motion" lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2"><meta name="theme-color" content="#222"><link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css"><link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet" type="text/css"><link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.5.0"><link rel="icon" type="image/png" sizes="32x32" href="/images/computer-32x32.ico?v=6.5.0"><link rel="icon" type="image/png" sizes="16x16" href="/images/computer-16x16.ico?v=6.5.0"><link rel="mask-icon" href="/images/logo.svg?v=6.5.0" color="#222"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Pisces",version:"6.5.0",sidebar:{position:"left",display:"hide",offset:12,b2t:!1,scrollpercent:!1,onmobile:!1},fancybox:!1,fastclick:!1,lazyload:!1,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},algolia:{applicationID:"D741EPI981",apiKey:"52365a260b9952e3828b12f67c8cf735",indexName:"myblog",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><meta name="description" content="原文链接AWK是一种处理文本文件的语言，是一个强大的文本分析工具。之所以叫AWK是因为其取了三位创始人Alfred Aho，Peter Weinberger, 和 Brian Kernighan 的Family Name的首字符。"><meta name="keywords" content="Linux命令"><meta property="og:type" content="article"><meta property="og:title" content="Linux awk 命令"><meta property="og:url" content="https://maoyunfei.github.io/linux/c0a16f03/index.html"><meta property="og:site_name" content="Mao&#39;s Blog"><meta property="og:description" content="原文链接AWK是一种处理文本文件的语言，是一个强大的文本分析工具。之所以叫AWK是因为其取了三位创始人Alfred Aho，Peter Weinberger, 和 Brian Kernighan 的Family Name的首字符。"><meta property="og:locale" content="zh-CN"><meta property="og:updated_time" content="2018-12-06T06:31:37.988Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Linux awk 命令"><meta name="twitter:description" content="原文链接AWK是一种处理文本文件的语言，是一个强大的文本分析工具。之所以叫AWK是因为其取了三位创始人Alfred Aho，Peter Weinberger, 和 Brian Kernighan 的Family Name的首字符。"><link rel="alternate" href="/atom.xml" title="Mao's Blog" type="application/atom+xml"><link rel="canonical" href="https://maoyunfei.github.io/linux/c0a16f03/"><script type="text/javascript" id="page.configurations">CONFIG.page={sidebar:""}</script><title>Linux awk 命令 | Mao's Blog</title><script type="text/javascript">var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?d8bcae1b2c95b745f3e8a2251980fdc0";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script><noscript><style type="text/css">.sidebar-inner,.use-motion .brand,.use-motion .collection-title,.use-motion .comments,.use-motion .menu-item,.use-motion .motion-element,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .logo,.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.logo-line-after i{right:initial}</style></noscript></head><body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><a href="https://github.com/maoyunfei"><img style="position:absolute;top:0;right:0;border:0" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a><header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">Mao's Blog</span> <span class="logo-line-after"><i></i></span></a></div></div><div class="site-nav-toggle"><button aria-label="切换导航栏"><span class="btn-bar"></span> <span class="btn-bar"></span> <span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br>标签</a></li><li class="menu-item menu-item-thinkinginjava"><a href="/tags/Thinking-in-Java/" rel="section"><i class="menu-item-icon fa fa-fw fa-book"></i><br>Java编程思想</a></li><li class="menu-item menu-item-javaconcurrencyinpractice"><a href="/tags/Java-Concurrency-In-Practice/" rel="section"><i class="menu-item-icon fa fa-fw fa-book"></i><br>Java并发编程实战</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i> </span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"><input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="https://maoyunfei.github.io/linux/c0a16f03/"><span hidden itemprop="author" itemscope itemtype="http://schema.org/Person"><meta itemprop="name" content="云逸云飞"><meta itemprop="description" content="A Java Programmer"><meta itemprop="image" content="https://avatars0.githubusercontent.com/u/17696716?s=460&v=4"></span><span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization"><meta itemprop="name" content="Mao's Blog"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">Linux awk 命令</h1><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i> </span><span class="post-meta-item-text">发表于</span> <time title="创建时间：2018-01-01 00:00:00" itemprop="dateCreated datePublished" datetime="2018-01-01T00:00:00+08:00">2018-01-01</time> </span><span class="post-category"><span class="post-meta-divider">|</span> <span class="post-meta-item-icon"><i class="fa fa-folder-o"></i> </span><span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span> </span><span class="post-meta-divider">|</span> <span class="post-meta-item-icon"><i class="fa fa-eye"></i> 阅读次数： <span class="busuanzi-value" id="busuanzi_value_page_pv"></span> </span><span class="post-meta-divider">|</span> <span class="post-symbolscount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i> </span><span class="post-meta-item-text">本文字数：</span> <span title="本文字数">5.1k</span> <span class="post-meta-divider">|</span> <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i> </span><span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">0:08</span></span></div></header><div class="post-body" itemprop="articleBody"><p><a href="http://www.runoob.com/linux/linux-comm-awk.html" target="_blank" rel="noopener">原文链接</a></p><p>AWK是一种处理文本文件的语言，是一个强大的文本分析工具。</p><p>之所以叫AWK是因为其取了三位创始人Alfred Aho，Peter Weinberger, 和 Brian Kernighan 的Family Name的首字符。</p><a id="more"></a><h2 id="语法"><a class="markdownIt-Anchor" href="#语法"></a> 语法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">awk [选项参数] &apos;script&apos; var=value file(s)</span><br><span class="line">或</span><br><span class="line">awk [选项参数] -f scriptfile var=value file(s)</span><br></pre></td></tr></table></figure><h3 id="常用选项参数说明"><a class="markdownIt-Anchor" href="#常用选项参数说明"></a> 常用选项参数说明</h3><ul><li>-F fs<br>指定输入文件的分隔符，fs是一个字符串或者是一个正则表达式，如-F:。</li><li>-V var=value<br>赋值一个用户定义变量</li><li>-f scripfile<br>从脚本文件中读取awk命令。</li></ul><h3 id="基本用法"><a class="markdownIt-Anchor" href="#基本用法"></a> 基本用法</h3><p>log.txt文本内容如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">2 this is a test</span><br><span class="line">3 Are you like awk</span><br><span class="line">This&apos;s a test</span><br><span class="line">10 There are orange,apple,mongo</span><br></pre></td></tr></table></figure><h4 id="用法一"><a class="markdownIt-Anchor" href="#用法一"></a> 用法一</h4><blockquote><p>awk ‘{[pattern] action}’ {filenames} # 行匹配语句 awk ‘’ 只能用单引号</p></blockquote><p>实例：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 每行按空格或TAB分割，输出文本中的1、4项</span><br><span class="line"> $ awk &apos;&#123;print $1,$4&#125;&apos; log.txt</span><br><span class="line"> ---------------------------------------------</span><br><span class="line"> 2 a</span><br><span class="line"> 3 like</span><br><span class="line"> This&apos;s</span><br><span class="line"> 10 orange,apple,mongo</span><br><span class="line"> </span><br><span class="line"> # 格式化输出</span><br><span class="line"> $ awk &apos;&#123;printf &quot;%-8s %-10s\n&quot;,$1,$4&#125;&apos; log.txt</span><br><span class="line"> ---------------------------------------------</span><br><span class="line"> 2        a</span><br><span class="line"> 3        like</span><br><span class="line"> This&apos;s</span><br><span class="line"> 10       orange,apple,mongo</span><br></pre></td></tr></table></figure><h4 id="用法二"><a class="markdownIt-Anchor" href="#用法二"></a> 用法二</h4><blockquote><p>awk -F #-F相当于内置变量FS, 指定分割字符</p></blockquote><p>实例：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># 使用&quot;,&quot;分割</span><br><span class="line"> $  awk -F, &apos;&#123;print $1,$2&#125;&apos; log.txt</span><br><span class="line"> ---------------------------------------------</span><br><span class="line"> 2 this is a test</span><br><span class="line"> 3 Are you like awk</span><br><span class="line"> This&apos;s a test</span><br><span class="line"> 10 There are orange apple</span><br><span class="line"> </span><br><span class="line"> # 或者使用内建变量</span><br><span class="line"> $ awk &apos;BEGIN&#123;FS=&quot;,&quot;&#125; &#123;print $1,$2&#125;&apos; log.txt</span><br><span class="line"> ---------------------------------------------</span><br><span class="line"> 2 this is a test</span><br><span class="line"> 3 Are you like awk</span><br><span class="line"> This&apos;s a test</span><br><span class="line"> 10 There are orange apple</span><br><span class="line"> </span><br><span class="line"> # 使用多个分隔符.先使用空格分割，然后对分割结果再使用&quot;,&quot;分割</span><br><span class="line"> $ awk -F &apos;[ ,]&apos;  &apos;&#123;print $1,$2,$5&#125;&apos; log.txt</span><br><span class="line"> ---------------------------------------------</span><br><span class="line"> 2 this test</span><br><span class="line"> 3 Are awk</span><br><span class="line"> This&apos;s a</span><br><span class="line"> 10 There apple</span><br></pre></td></tr></table></figure><h4 id="用法三"><a class="markdownIt-Anchor" href="#用法三"></a> 用法三</h4><blockquote><p>awk -v # 设置变量</p></blockquote><p>实例：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ awk -va=1 &apos;&#123;print $1,$1+a&#125;&apos; log.txt</span><br><span class="line"> ---------------------------------------------</span><br><span class="line"> 2 3</span><br><span class="line"> 3 4</span><br><span class="line"> This&apos;s 1</span><br><span class="line"> 10 11</span><br><span class="line"> </span><br><span class="line"> $ awk -va=1 -vb=s &apos;&#123;print $1,$1+a,$1b&#125;&apos; log.txt</span><br><span class="line"> ---------------------------------------------</span><br><span class="line"> 2 3 2s</span><br><span class="line"> 3 4 3s</span><br><span class="line"> This&apos;s 1 This&apos;ss</span><br><span class="line"> 10 11 10s</span><br></pre></td></tr></table></figure><h4 id="用法四"><a class="markdownIt-Anchor" href="#用法四"></a> 用法四</h4><blockquote><p>awk -f {awk脚本} {文件名}</p></blockquote><p>实例：</p><p><code>$ awk -f cal.awk log.txt</code></p><h3 id="运算符"><a class="markdownIt-Anchor" href="#运算符"></a> 运算符</h3><table class="reference"><thead><tr><th>运算符</th><th>描述</th></tr></thead><tbody><tr><td>= += -= *= /= %= ^= **=</td><td>赋值</td></tr><tr><td>?:</td><td>C条件表达式</td></tr><tr><td>||</td><td>逻辑或</td></tr><tr><td>&amp;&amp;</td><td>逻辑与</td></tr><tr><td>~ ~!</td><td>匹配正则表达式和不匹配正则表达式</td></tr><tr><td>&lt; &lt;= &gt; &gt;= != ==</td><td>关系运算符</td></tr><tr><td>空格</td><td>连接</td></tr><tr><td>+ -</td><td>加，减</td></tr><tr><td>* / %</td><td>乘，除与求余</td></tr><tr><td>+ - !</td><td>一元加，减和逻辑非</td></tr><tr><td>^ ***</td><td>求幂</td></tr><tr><td>++ --</td><td>增加或减少，作为前缀或后缀</td></tr><tr><td>$</td><td>字段引用</td></tr><tr><td>in</td><td>数组成员</td></tr></tbody></table>* 过滤第一列大于2的行<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ awk &apos;$1&gt;2&apos; log.txt    #命令</span><br><span class="line">#输出</span><br><span class="line">3 Are you like awk</span><br><span class="line">This&apos;s a test</span><br><span class="line">10 There are orange,apple,mongo</span><br></pre></td></tr></table></figure><ul><li>过滤第一列等于2的行</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ awk &apos;$1==2 &#123;print $1,$3&#125;&apos; log.txt    #命令</span><br><span class="line">#输出</span><br><span class="line">2 is</span><br></pre></td></tr></table></figure><ul><li>过滤第一列大于2并且第二列等于’Are’的行</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ awk &apos;$1&gt;2 &amp;&amp; $2==&quot;Are&quot; &#123;print $1,$2,$3&#125;&apos; log.txt    #命令</span><br><span class="line">#输出</span><br><span class="line">3 Are you</span><br></pre></td></tr></table></figure><h3 id="内置变量"><a class="markdownIt-Anchor" href="#内置变量"></a> 内置变量</h3><table class="reference"><thead><tr><th>变量</th><th>描述</th></tr></thead><tbody><tr><td>\$n</td><td>当前记录的第n个字段，字段间由FS分隔</td></tr><tr><td>\$0</td><td>完整的输入记录</td></tr><tr><td>ARGC</td><td>命令行参数的数目</td></tr><tr><td>ARGIND</td><td>命令行中当前文件的位置(从0开始算)</td></tr><tr><td>ARGV</td><td>包含命令行参数的数组</td></tr><tr><td>CONVFMT</td><td>数字转换格式(默认值为%.6g)ENVIRON环境变量关联数组</td></tr><tr><td>ERRNO</td><td>最后一个系统错误的描述</td></tr><tr><td>FIELDWIDTHS</td><td>字段宽度列表(用空格键分隔)</td></tr><tr><td>FILENAME</td><td>当前文件名</td></tr><tr><td>FNR</td><td>各文件分别计数的行号</td></tr><tr><td>FS</td><td>字段分隔符(默认是任何空格)</td></tr><tr><td>IGNORECASE</td><td>如果为真，则进行忽略大小写的匹配</td></tr><tr><td>NF</td><td>输入字段分割符</td></tr><tr><td>NR</td><td>已经读出的记录数，就是行号，从1开始</td></tr><tr><td>OFMT</td><td>数字的输出格式(默认值是%.6g)</td></tr><tr><td>OFS</td><td>输出记录分隔符（输出换行符），输出时用指定的符号代替换行符</td></tr><tr><td>ORS</td><td>输出记录分隔符(默认值是一个换行符)</td></tr><tr><td>RLENGTH</td><td>由match函数所匹配的字符串的长度</td></tr><tr><td>RS</td><td>记录分隔符(默认是一个换行符)</td></tr><tr><td>RSTART</td><td>由match函数所匹配的字符串的第一个位置</td></tr><tr><td>SUBSEP</td><td>数组下标分隔符(默认值是/034)</td></tr></tbody></table>### 使用正则，字符串匹配<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 输出第二列包含 &quot;th&quot;，并打印第二列与第四列</span><br><span class="line">$ awk &apos;$2 ~ /th/ &#123;print $2,$4&#125;&apos; log.txt</span><br><span class="line">---------------------------------------------</span><br><span class="line">this a</span><br></pre></td></tr></table></figure><p><strong>~ 表示模式开始。//中是模式</strong></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 输出包含&quot;re&quot; 的行</span><br><span class="line">$ awk &apos;/re/ &apos; log.txt</span><br><span class="line">---------------------------------------------</span><br><span class="line">3 Are you like awk</span><br><span class="line">10 There are orange,apple,mongo</span><br></pre></td></tr></table></figure><h3 id="忽略大小写"><a class="markdownIt-Anchor" href="#忽略大小写"></a> 忽略大小写</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ awk &apos;BEGIN&#123;IGNORECASE=1&#125; /this/&apos; log.txt</span><br><span class="line">---------------------------------------------</span><br><span class="line">2 this is a test</span><br><span class="line">This&apos;s a test</span><br></pre></td></tr></table></figure><h3 id="模式取反"><a class="markdownIt-Anchor" href="#模式取反"></a> 模式取反</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ awk &apos;$2 !~ /th/ &#123;print $2,$4&#125;&apos; log.txt</span><br><span class="line">---------------------------------------------</span><br><span class="line">Are like</span><br><span class="line">a</span><br><span class="line">There orange,apple,mongo</span><br><span class="line"></span><br><span class="line">$ awk &apos;!/th/ &#123;print $2,$4&#125;&apos; log.txt</span><br><span class="line">---------------------------------------------</span><br><span class="line">Are like</span><br><span class="line">a</span><br><span class="line">There orange,apple,mongo</span><br></pre></td></tr></table></figure><h3 id="awk脚本"><a class="markdownIt-Anchor" href="#awk脚本"></a> awk脚本</h3><p>关于awk脚本，我们需要注意两个关键词BEGIN和END。</p><ul><li>BEGIN{ 这里面放的是执行前的语句 }</li><li>END {这里面放的是处理完所有的行后要执行的语句 }</li><li>{这里面放的是处理每一行时要执行的语句}</li></ul><p>假设有这么一个文件（学生成绩表）：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cat score.txt</span><br><span class="line">Marry   2143 78 84 77</span><br><span class="line">Jack    2321 66 78 45</span><br><span class="line">Tom     2122 48 77 71</span><br><span class="line">Mike    2537 87 97 95</span><br><span class="line">Bob     2415 40 57 62</span><br></pre></td></tr></table></figure><p>我们的awk脚本如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">$ cat cal.awk</span><br><span class="line">#!/bin/awk -f</span><br><span class="line">#运行前</span><br><span class="line">BEGIN &#123;</span><br><span class="line">    math = 0</span><br><span class="line">    english = 0</span><br><span class="line">    computer = 0</span><br><span class="line"> </span><br><span class="line">    printf &quot;NAME    NO.   MATH  ENGLISH  COMPUTER   TOTAL\n&quot;</span><br><span class="line">    printf &quot;---------------------------------------------\n&quot;</span><br><span class="line">&#125;</span><br><span class="line">#运行中</span><br><span class="line">&#123;</span><br><span class="line">    math+=$3</span><br><span class="line">    english+=$4</span><br><span class="line">    computer+=$5</span><br><span class="line">    printf &quot;%-6s %-6s %4d %8d %8d %8d\n&quot;, $1, $2, $3,$4,$5, $3+$4+$5</span><br><span class="line">&#125;</span><br><span class="line">#运行后</span><br><span class="line">END &#123;</span><br><span class="line">    printf &quot;---------------------------------------------\n&quot;</span><br><span class="line">    printf &quot;  TOTAL:%10d %8d %8d \n&quot;, math, english, computer</span><br><span class="line">    printf &quot;AVERAGE:%10.2f %8.2f %8.2f\n&quot;, math/NR, english/NR, computer/NR</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>我们来看一下执行结果：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ awk -f cal.awk score.txt</span><br><span class="line">NAME    NO.   MATH  ENGLISH  COMPUTER   TOTAL</span><br><span class="line">---------------------------------------------</span><br><span class="line">Marry  2143     78       84       77      239</span><br><span class="line">Jack   2321     66       78       45      189</span><br><span class="line">Tom    2122     48       77       71      196</span><br><span class="line">Mike   2537     87       97       95      279</span><br><span class="line">Bob    2415     40       57       62      159</span><br><span class="line">---------------------------------------------</span><br><span class="line">  TOTAL:       319      393      350</span><br><span class="line">AVERAGE:     63.80    78.60    70.00</span><br></pre></td></tr></table></figure></div><div><div style="padding:10px 0;margin:20px auto;width:90%;text-align:center"><div>求鼓励，求支持！</div><button id="rewardButton" disable="enable" onclick='var qr=document.getElementById("QR");"none"===qr.style.display?qr.style.display="block":qr.style.display="none"'><span>打赏</span></button><div id="QR" style="display:none"><div id="wechat" style="display:inline-block"><img id="wechat_qr" src="/images/wechatpay.jpg" alt="云逸云飞 微信支付"><p>微信支付</p></div></div></div></div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者： </strong>云逸云飞</li><li class="post-copyright-link"><strong>本文链接：</strong> <a href="https://maoyunfei.github.io/linux/c0a16f03/" title="Linux awk 命令">https://maoyunfei.github.io/linux/c0a16f03/</a></li><li class="post-copyright-license"><strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/tags/Linux命令/" rel="tag"><i class="fa fa-tag"></i> Linux命令</a></div><div class="post-widgets"><div class="social_share"><div id="needsharebutton-postbottom"><span class="btn"><i class="fa fa-share-alt" aria-hidden="true"></i></span></div></div></div><div class="post-nav"><div class="post-nav-next post-nav-item"></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"><a href="/linux/152528eb/" rel="prev" title="Linux dig 命令">Linux dig 命令 <i class="fa fa-chevron-right"></i></a></div></div></footer></div></article></div></div><div class="comments" id="comments"><div id="gitment-container"></div></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span> <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span> <span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap">站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person"><img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/17696716?s=460&v=4" alt="云逸云飞"><p class="site-author-name" itemprop="name">云逸云飞</p><p class="site-description motion-element" itemprop="description">A Java Programmer</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href="/archives/"><span class="site-state-item-count">65</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"><a href="/categories/index.html"><span class="site-state-item-count">8</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"><a href="/tags/index.html"><span class="site-state-item-count">23</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="feed-link motion-element"><a href="/atom.xml" rel="alternate"><i class="fa fa-rss"></i> RSS</a></div><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/maoyunfei" title="GitHub &rarr; https://github.com/maoyunfei" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a> </span><span class="links-of-author-item"><a href="mailto:735803352@qq.com" title="E-Mail &rarr; mailto:735803352@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a></span></div></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法"><span class="nav-number">1.</span> <span class="nav-text">语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用选项参数说明"><span class="nav-number">1.1.</span> <span class="nav-text">常用选项参数说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本用法"><span class="nav-number">1.2.</span> <span class="nav-text">基本用法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#用法一"><span class="nav-number">1.2.1.</span> <span class="nav-text">用法一</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用法二"><span class="nav-number">1.2.2.</span> <span class="nav-text">用法二</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用法三"><span class="nav-number">1.2.3.</span> <span class="nav-text">用法三</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用法四"><span class="nav-number">1.2.4.</span> <span class="nav-text">用法四</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运算符"><span class="nav-number">1.3.</span> <span class="nav-text">运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内置变量"><span class="nav-number">1.4.</span> <span class="nav-text">内置变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#忽略大小写"><span class="nav-number">1.5.</span> <span class="nav-text">忽略大小写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模式取反"><span class="nav-number">1.6.</span> <span class="nav-text">模式取反</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk脚本"><span class="nav-number">1.7.</span> <span class="nav-text">awk脚本</span></a></li></ol></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2018</span> <span class="with-love" id="animate"><i class="fa fa-heart"></i> </span><span class="author" itemprop="copyrightHolder">云逸云飞</span></div><div class="busuanzi-count"><script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span class="site-uv" title="总访客量"><i class="fa fa-user"></i> <span class="busuanzi-value" id="busuanzi_value_site_uv"></span> </span><span class="site-pv" title="总访问量"><i class="fa fa-eye"></i> <span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i></div><div id="needsharebutton-float"><span class="btn"><i class="fa fa-share-alt" aria-hidden="true"></i></span></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" color="0,0,255" opacity="0.5" zindex="-1" count="99" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1.0.0/canvas-nest.min.js"></script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script><script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script><script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script><script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script><script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script><link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css"><script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script><script type="text/javascript">function renderGitment(){new Gitmint({id:window.location.pathname,owner:"maoyunfei",repo:"maoyunfei.github.io",lang:navigator.language||navigator.systemLanguage||navigator.userLanguage,oauth:{client_secret:"d8e65bd9b612d87b11e04822e09e4b22b8e1f998",client_id:"6730257a3c2bf3bcc351"}}).render("gitment-container")}renderGitment()</script><script type="text/javascript">// Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });</script><script src="/lib/needsharebutton/needsharebutton.js"></script><script>pbOptions={},pbOptions.iconStyle="box",pbOptions.boxForm="horizontal",pbOptions.position="bottomCenter",pbOptions.networks="Weibo,Wechat,QQZone,Douban,Evernote,Twitter,Facebook,GooglePlus,Linkedin",new needShareButton("#needsharebutton-postbottom",pbOptions),flOptions={},flOptions.iconStyle="box",flOptions.boxForm="horizontal",flOptions.position="middleRight",flOptions.networks="Weibo,Wechat,Douban,QQZone,Twitter,Facebook",new needShareButton("#needsharebutton-float",flOptions)</script><style>.copy-btn{display:inline-block;padding:6px 12px;font-size:13px;font-weight:700;line-height:20px;color:#333;white-space:nowrap;vertical-align:middle;cursor:pointer;background-color:#eee;background-image:linear-gradient(#fcfcfc,#eee);border:1px solid #d5d5d5;border-radius:3px;user-select:none;outline:0}.highlight-wrap .copy-btn{transition:opacity .3s ease-in-out;opacity:0;padding:2px 6px;position:absolute;right:4px;top:8px}.highlight-wrap .copy-btn:focus,.highlight-wrap:hover .copy-btn{opacity:1}.highlight-wrap{position:relative}</style><script>$(".highlight").each(function(t,e){var n=$("<div>").addClass("highlight-wrap");$(e).after(n),n.append($("<button>").addClass("copy-btn").append("复制").on("click",function(t){var e=$(this).parent().find(".code").find(".line").map(function(t,e){return $(e).text()}).toArray().join("\n"),n=document.createElement("textarea");document.body.appendChild(n),n.style.position="absolute",n.style.top="0px",n.style.left="0px",n.value=e,n.select(),n.focus();var o=document.execCommand("copy");document.body.removeChild(n),o?$(this).text("复制成功"):$(this).text("复制失败"),$(this).blur()})).on("mouseleave",function(t){var e=$(this).find(".copy-btn");setTimeout(function(){e.text("复制")},300)}).append(e)})</script></body></html>

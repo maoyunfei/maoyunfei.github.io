@@ -1,0 +1,317 @@
+<!DOCTYPE html><html class="theme-next pisces use-motion" lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2"><meta name="theme-color" content="#222"><link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css"><link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet" type="text/css"><link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.5.0"><link rel="icon" type="image/png" sizes="32x32" href="/images/computer-32x32.ico?v=6.5.0"><link rel="icon" type="image/png" sizes="16x16" href="/images/computer-16x16.ico?v=6.5.0"><link rel="mask-icon" href="/images/logo.svg?v=6.5.0" color="#222"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Pisces",version:"6.5.0",sidebar:{position:"left",display:"hide",offset:12,b2t:!1,scrollpercent:!1,onmobile:!1},fancybox:!1,fastclick:!1,lazyload:!1,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},algolia:{applicationID:"D741EPI981",apiKey:"52365a260b9952e3828b12f67c8cf735",indexName:"myblog",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><meta name="description" content="从集中式到分布式 集中式的特点所谓的集中式系统就是指由一台或多台主计算机组成中心节点，数据集中存储于这个中心节点中，并且整个系统的所有业务单元都集中部署在这个中心节点上，系统的所有功能均由其集中处理。集中式系统最大的特点就是部署结构简单。由于集中式系统往往基于底层性能卓越的大型主机，因此无需考虑如何对服务进行多个节点的部署，也就不用考虑多个节点之间的分布式协作问题。"><meta name="keywords" content="分布式,ACID,CAP,BASE"><meta property="og:type" content="article"><meta property="og:title" content="第一章、分布式架构"><meta property="og:url" content="https://maoyunfei.github.io/distributed/b1bde3f7/index.html"><meta property="og:site_name" content="Mao&#39;s Blog"><meta property="og:description" content="从集中式到分布式 集中式的特点所谓的集中式系统就是指由一台或多台主计算机组成中心节点，数据集中存储于这个中心节点中，并且整个系统的所有业务单元都集中部署在这个中心节点上，系统的所有功能均由其集中处理。集中式系统最大的特点就是部署结构简单。由于集中式系统往往基于底层性能卓越的大型主机，因此无需考虑如何对服务进行多个节点的部署，也就不用考虑多个节点之间的分布式协作问题。"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://github.com/maoyunfei/static-sources/blob/master/cap_1.jpeg?raw=true"><meta property="og:image" content="https://github.com/maoyunfei/static-sources/blob/master/cap_2.jpeg?raw=true"><meta property="og:updated_time" content="2018-12-06T06:31:38.017Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="第一章、分布式架构"><meta name="twitter:description" content="从集中式到分布式 集中式的特点所谓的集中式系统就是指由一台或多台主计算机组成中心节点，数据集中存储于这个中心节点中，并且整个系统的所有业务单元都集中部署在这个中心节点上，系统的所有功能均由其集中处理。集中式系统最大的特点就是部署结构简单。由于集中式系统往往基于底层性能卓越的大型主机，因此无需考虑如何对服务进行多个节点的部署，也就不用考虑多个节点之间的分布式协作问题。"><meta name="twitter:image" content="https://github.com/maoyunfei/static-sources/blob/master/cap_1.jpeg?raw=true"><link rel="alternate" href="/atom.xml" title="Mao's Blog" type="application/atom+xml"><link rel="canonical" href="https://maoyunfei.github.io/distributed/b1bde3f7/"><script type="text/javascript" id="page.configurations">CONFIG.page={sidebar:""}</script><title>第一章、分布式架构 | Mao's Blog</title><script type="text/javascript">var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?d8bcae1b2c95b745f3e8a2251980fdc0";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script><noscript><style type="text/css">.sidebar-inner,.use-motion .brand,.use-motion .collection-title,.use-motion .comments,.use-motion .menu-item,.use-motion .motion-element,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .logo,.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.logo-line-after i{right:initial}</style></noscript></head><body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><a href="https://github.com/maoyunfei"><img style="position:absolute;top:0;right:0;border:0" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a><header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">Mao's Blog</span> <span class="logo-line-after"><i></i></span></a></div></div><div class="site-nav-toggle"><button aria-label="切换导航栏"><span class="btn-bar"></span> <span class="btn-bar"></span> <span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br>标签</a></li><li class="menu-item menu-item-thinkinginjava"><a href="/tags/Thinking-in-Java/" rel="section"><i class="menu-item-icon fa fa-fw fa-book"></i><br>Java编程思想</a></li><li class="menu-item menu-item-javaconcurrencyinpractice"><a href="/tags/Java-Concurrency-In-Practice/" rel="section"><i class="menu-item-icon fa fa-fw fa-book"></i><br>Java并发编程实战</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i> </span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"><input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="https://maoyunfei.github.io/distributed/b1bde3f7/"><span hidden itemprop="author" itemscope itemtype="http://schema.org/Person"><meta itemprop="name" content="云逸云飞"><meta itemprop="description" content="A Java Programmer"><meta itemprop="image" content="https://avatars0.githubusercontent.com/u/17696716?s=460&v=4"></span><span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization"><meta itemprop="name" content="Mao's Blog"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">第一章、分布式架构</h1><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i> </span><span class="post-meta-item-text">发表于</span> <time title="创建时间：2018-05-31 00:00:00" itemprop="dateCreated datePublished" datetime="2018-05-31T00:00:00+08:00">2018-05-31</time> </span><span class="post-category"><span class="post-meta-divider">|</span> <span class="post-meta-item-icon"><i class="fa fa-folder-o"></i> </span><span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/distributed/" itemprop="url" rel="index"><span itemprop="name">分布式</span></a></span> </span><span class="post-meta-divider">|</span> <span class="post-meta-item-icon"><i class="fa fa-eye"></i> 阅读次数： <span class="busuanzi-value" id="busuanzi_value_page_pv"></span> </span><span class="post-meta-divider">|</span> <span class="post-symbolscount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i> </span><span class="post-meta-item-text">本文字数：</span> <span title="本文字数">4k</span> <span class="post-meta-divider">|</span> <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i> </span><span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">0:07</span></span></div></header><div class="post-body" itemprop="articleBody"><h2 id="从集中式到分布式"><a class="markdownIt-Anchor" href="#从集中式到分布式"></a> 从集中式到分布式</h2><h3 id="集中式的特点"><a class="markdownIt-Anchor" href="#集中式的特点"></a> 集中式的特点</h3><p>所谓的集中式系统就是指由一台或多台主计算机组成中心节点，数据集中存储于这个中心节点中，并且整个系统的所有业务单元都集中部署在这个中心节点上，系统的所有功能均由其集中处理。</p><p>集中式系统最大的特点就是部署结构简单。由于集中式系统往往基于底层性能卓越的大型主机，因此无需考虑如何对服务进行多个节点的部署，也就不用考虑多个节点之间的分布式协作问题。</p><a id="more"></a><h3 id="分布式的特点"><a class="markdownIt-Anchor" href="#分布式的特点"></a> 分布式的特点</h3><p>分布式系统是一个硬件或软件组件分布在不同的网络计算机上，彼此之间仅仅通过消息传递进行通信和协调的系统。</p><p>严格地讲，同一个分布式系统中的计算机在空间部署上是可以随意分布的，这些计算机可能被放在不同的机柜上，也可能在不同的机房中，甚至分布在不同的城市。</p><p>无论如何，一个标准的分布式系统在没有任何特定业务逻辑约束的情况下，都会有如下几个特征。</p><ul><li><p>分布性</p><p>分布式系统中的多台计算机都会在空间上随意分布，同时，机器的分布情况也会随时变动。</p></li><li><p>对等性</p><p>分布式系统中的计算机没有主/从之分，既没有控制整个系统的主机，也没有被控制的从机，组成分布式系统的所有计算机节点都是对等的。</p><p>副本(<code>replica</code>)是分布式系统最常见的概念之一，指的是分布式系统对数据和服务提供的一种冗余方式。在常见的分布式系统中，为了对外提供高可用的服务，我们往往会对数据和服务进行副本处理。数据副本是指在不同的节点上持久化同一份数据，当某一个节点上存储的数据丢失时，可以从副本上读取到该数据，这是解决分布式系统数据丢失问题最为有效的手段。另一类副本是服务副本，指多个节点提供同样的服务，每个节点都有能力接收来自外部的请求并进行相应的处理。</p></li><li><p>并发性</p><p>在一个计算机网络中，程序运行过程中的并发性操作是非常常见的行为，例如同一个分布式系统中的多个节点，可能会并发地操作一些共享的资源，诸如数据库或分布式存储等，如何准确并高效地协调分布式并发操作也成为了分布式系统架构个设计中最大的挑战之一。</p></li><li><p>缺乏全局时钟</p><p>在分布式系统中，很难定义两个事件究竟谁先谁后，原因就是因为分布式系统缺乏一个全局的时钟序列控制。</p></li><li><p>故障总是会发生</p><p>组成分布式系统的所有计算机，都有可能发生任何形式的故障。一个被大量工程实践所检验过的黄金定理是：任何在设计阶段考虑到的异常情况，一定会在系统实际运行中发生，并且，在系统实际运行过程中，还会遇到很多在设计时未能考虑到的异常故障。所以，除非需求指标允许，在系统设计时不能放过任何异常情况。</p></li></ul><h3 id="分布式环境的各种问题"><a class="markdownIt-Anchor" href="#分布式环境的各种问题"></a> 分布式环境的各种问题</h3><p>分布式系统体系结构从其出现之初就伴随着诸多的难题和挑战，本节将向读者简要的介绍分布式环境中一些典型的问题。</p><h4 id="通信异常"><a class="markdownIt-Anchor" href="#通信异常"></a> 通信异常</h4><p>从集中式向分布式演变的过程中，必然引入了网络因素，而由于网络本身的不可靠性，因此也引入了额外的问题。分布式系统需要在各个节点之间进行网络通信，因此每次网络通信都会伴随着网络不可用的风险。另外，即使分布式系统各节点之间的网络通信能够正常进行，其延时也会远大于单机操作。</p><h4 id="网络分区"><a class="markdownIt-Anchor" href="#网络分区"></a> 网络分区</h4><p>当网络由于发生异常情况，导致分布式系统中部分节点之间的网络延时不断增大，最终导致组成分布式系统的所有节点中，只有部分节点之间能够进行正常通信，而另一些节点则不能–我们将这个现象称为网络分区，就是俗称的“脑裂”。当网络分区出现时，分布式系统会出现局部小集群，在极端情况下，这些局部小集群会独立完成原本需要整个分布式系统才能完成的功能，包括对数据的事务处理，这就对分布式一致性提出了非常大的挑战。</p><h4 id="三态"><a class="markdownIt-Anchor" href="#三态"></a> 三态</h4><p>分布式系统的每一次请求与响应，存在特有的“三态”概念，即成功、失败与超时。在传统的单机系统中，应用程序在调用一个函数之后，能够得到一个非常明确的响应：成功或失败。而在分布式系统中，由于网络是不可靠的，虽然在绝大多数情况下，网络通信也能够接收到成功或失败的响应，但是当网络出现异常的情况下，就可能会出现超时现象，通常有以下两种情况：</p><ul><li>由于网络原因，该请求(消息)并没有被成功地发送到接收方，而是在发生过程就发生了消息丢失现象。</li><li>该请求(消息)成功的被接收方接收后，并进行了处理，但是在响应反馈给发送方的过程中，发生了消息丢失现象。</li></ul><p>当出现这样的超时现象时，网络通信的发起方是无法确定当前请求是否被成功处理的。</p><h4 id="节点故障"><a class="markdownIt-Anchor" href="#节点故障"></a> 节点故障</h4><p>节点故障则是分布式环境下另一个比较常见的问题，指的是组成分布式系统的服务器节点出现的宕机或“僵死”现象。通常根据经验来说，每个节点都有可能会出现故障，并且每天都在发生。</p><h2 id="从acid到capbase"><a class="markdownIt-Anchor" href="#从acid到capbase"></a> 从ACID到CAP/BASE</h2><h4 id="acid"><a class="markdownIt-Anchor" href="#acid"></a> ACID</h4><p>事务是由一系列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用程序之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供了一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍能保持数据一致性的方法。</p><p>事务具有四个特征，分别是原子性(<code>Atomicity</code>)、一致性(<code>Consistency</code>)、隔离性(<code>Isolation</code>)和持久性(<code>Durability</code>)，简称为事务的<code>ACID</code>特征。</p><h5 id="原子性"><a class="markdownIt-Anchor" href="#原子性"></a> 原子性</h5><p>事务的原子性是指事务必须是一个原子的操作序列单元。事务中包含的各项操作在一次执行过程中，只允许出现以下两种状态之一。</p><ul><li>全部成功执行。</li><li>全部不执行。</li></ul><p>任何一项操作失败都将导致整个事务失败，同时其他已经被执行的操作都将被撤销并回滚，只有所有的操作全部成功，整个事务才算是成功完成。</p><h5 id="一致性"><a class="markdownIt-Anchor" href="#一致性"></a> 一致性</h5><p>事务的一致性是指事务的执行不能破坏数据库数据的完整性和一致性，一个事务在执行之前和执行之后，数据库都必须处于一致性状态。也就是说，事务执行的结果必须是使数据库从一个一致性状态转变到另一个一致性状态，因此当数据库只包含成功事务提交的结果时，就能说数据库处于一致性状态。而如果数据库系统在运行过程中发生故障，有些事务尚未完成就被迫中断，这些未完成的事务对数据库所做的修改有一部分已写入物理数据库，这时数据库就处于一种不正确的状态，或者说是不一致的状态。</p><h5 id="隔离性"><a class="markdownIt-Anchor" href="#隔离性"></a> 隔离性</h5><p>事务的隔离性是指在并发环境中，并发的事务是相互隔离的，一个事务的执行不能被其他事务干扰。也就是说，不同的事务并发操纵相同的数据时，每个事务都有各自完整的数据空间，即一个事务内部的操作及使用的数据对其他并发事务是隔离的，并发执行的各个事务之间不能互相干扰。</p><h5 id="持久性"><a class="markdownIt-Anchor" href="#持久性"></a> 持久性</h5><p>事务的持久性也被称为永久性，是指一个事务一旦提交，它对数据库中对应数据的状态变更就应该是永久性的。换句话说，一旦某个事务成功结束，那么它对数据库所做的更新就必须被永久保存下来–即使发生系统崩溃或机器宕机等故障，只要数据库能够重新启动，那么一定能够将其恢复到事务成功结束时的状态。</p><h4 id="分布式事务"><a class="markdownIt-Anchor" href="#分布式事务"></a> 分布式事务</h4><p>分布式事务是指事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于分布式系统的不同节点之上。通常一个分布式事务中会涉及对多个数据源或业务系统的操作。</p><h4 id="cap和base理论"><a class="markdownIt-Anchor" href="#cap和base理论"></a> CAP和BASE理论</h4><p>在可用性和一致性之间永远无法存在一个两全其美的方案，于是如何构建一个兼顾可用性和一致性的分布式系统成为了无数工程师探讨的难题，出现了诸如<code>CAP</code>和<code>BASE</code>这样的分布式系统经典理论。</p><h5 id="cap定理"><a class="markdownIt-Anchor" href="#cap定理"></a> CAP定理</h5><p><code>CAP</code>理论告诉我们，一个分布式系统不可能同时满足一致性(<code>C: Consistency</code>)、可用性(<code>A: Availability</code>)和分区容错性(<code>P: Partition tolerance</code>)这三个基本需求，做多只能同时满足其中的两项。</p><p><img src="https://github.com/maoyunfei/static-sources/blob/master/cap_1.jpeg?raw=true" alt=""></p><p><img src="https://github.com/maoyunfei/static-sources/blob/master/cap_2.jpeg?raw=true" alt=""></p><p>从<code>CAP</code>定理中我们可以看出，一个分布式系统不可能同时满足一致性、可用性和分区容错性这三个需求。另一方面，需要明确的一点是，<strong>对于一个分布式系统而言，分区容错性可以说是一个最基本的要求</strong>。因为既然是一个分布式系统，那么分布式系统中的组件必然需要被部署到不同的节点，否则也就无所谓分布式系统了，因此必然出现子网络。而对于分布式系统而言，网络问题又是一个必定会出现的异常情况，因此分区容错性也就成为了一个分布式系统必然需要面对和解决的问题。因此系统架构设计师往往需要把精力花在如何根据业务特点在<code>C</code>(一致性)和<code>A</code>(可用性)之间寻求平衡。</p><h5 id="base理论"><a class="markdownIt-Anchor" href="#base理论"></a> BASE理论</h5><p><code>BASE</code>是<code>Basically Available</code>(基本可用)、<code>Soft state</code>(软状态)和<code>Eventually consistent</code>(最终一致性)三个短语的简写。<code>BASE</code>是对<code>CAP</code>中一致性和可用性权衡的结果，其核心来源于对大规模互联网系统分布式实践的总结，是基于<code>CAP</code>定理逐步演化而来的，其核心思想是即使无法做到强一致性，但每个业务都可以根据自身的业务特点，采用适当的方式来使系统达到最终一致性。</p><p><strong>基本可用</strong></p><p>基本可用是指分布式系统在出现不可预知故障的时候，允许损失部分可用性–但请注意，这绝不等价于系统不可用。以下两个就是“基本可用”的典型例子。</p><ul><li>响应时间上的损失。</li><li>功能上的损失。</li></ul><p><strong>弱状态</strong></p><p>弱状态也称为软状态，和硬状态相对，是指允许系统中的数据存在中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统在不同节点的数据副本之间进行数据同步的过程存在延时。</p><p><strong>最终一致性</strong></p><p>最终一致性强调的是系统中所有的数据副本，在经过一段时间的同步后，最终能够达到一个一致的状态。因此，最终一致性的本质是需要系统保证最终数据能够达到一致，而不需要实时保证数据的强一致性。</p><p>总的来说，<code>BASE</code>理论面向的是大型高可用可扩展的分布式系统，和传统事务的<code>ACID</code>特性是相反的，他完全不同于<code>ACID</code>的强一致性模型，而是提出通过牺牲强一致性来获得可用性，并允许数据在一段时间内是不一致的，但最终达到一致状态。但同时，在实际的分布式场景中，不同业务单元和组件对数据一致性的要求是不同的，因此具体分布式系统架构设计过程中，<code>ACID</code>特性与<code>BASE</code>理论往往又会结合在一起使用。</p></div><div><div style="padding:10px 0;margin:20px auto;width:90%;text-align:center"><div>求鼓励，求支持！</div><button id="rewardButton" disable="enable" onclick='var qr=document.getElementById("QR");"none"===qr.style.display?qr.style.display="block":qr.style.display="none"'><span>打赏</span></button><div id="QR" style="display:none"><div id="wechat" style="display:inline-block"><img id="wechat_qr" src="/images/wechatpay.jpg" alt="云逸云飞 微信支付"><p>微信支付</p></div></div></div></div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者： </strong>云逸云飞</li><li class="post-copyright-link"><strong>本文链接：</strong> <a href="https://maoyunfei.github.io/distributed/b1bde3f7/" title="第一章、分布式架构">https://maoyunfei.github.io/distributed/b1bde3f7/</a></li><li class="post-copyright-license"><strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/tags/分布式/" rel="tag"><i class="fa fa-tag"></i> 分布式</a> <a href="/tags/ACID/" rel="tag"><i class="fa fa-tag"></i> ACID</a> <a href="/tags/CAP/" rel="tag"><i class="fa fa-tag"></i> CAP</a> <a href="/tags/BASE/" rel="tag"><i class="fa fa-tag"></i> BASE</a></div><div class="post-widgets"><div class="social_share"><div id="needsharebutton-postbottom"><span class="btn"><i class="fa fa-share-alt" aria-hidden="true"></i></span></div></div></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/java/38b1a788/" rel="next" title="Java线程安全与锁优化"><i class="fa fa-chevron-left"></i> Java线程安全与锁优化</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"><a href="/java/a2c6556/" rel="prev" title="Java编程思想———初始化与清理">Java编程思想———初始化与清理 <i class="fa fa-chevron-right"></i></a></div></div></footer></div></article></div></div><div class="comments" id="comments"><div id="gitment-container"></div></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span> <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span> <span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap">站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person"><img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/17696716?s=460&v=4" alt="云逸云飞"><p class="site-author-name" itemprop="name">云逸云飞</p><p class="site-description motion-element" itemprop="description">A Java Programmer</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href="/archives/"><span class="site-state-item-count">65</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"><a href="/categories/index.html"><span class="site-state-item-count">8</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"><a href="/tags/index.html"><span class="site-state-item-count">23</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="feed-link motion-element"><a href="/atom.xml" rel="alternate"><i class="fa fa-rss"></i> RSS</a></div><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/maoyunfei" title="GitHub &rarr; https://github.com/maoyunfei" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a> </span><span class="links-of-author-item"><a href="mailto:735803352@qq.com" title="E-Mail &rarr; mailto:735803352@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a></span></div></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从集中式到分布式"><span class="nav-number">1.</span> <span class="nav-text">从集中式到分布式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#集中式的特点"><span class="nav-number">1.1.</span> <span class="nav-text">集中式的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式的特点"><span class="nav-number">1.2.</span> <span class="nav-text">分布式的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式环境的各种问题"><span class="nav-number">1.3.</span> <span class="nav-text">分布式环境的各种问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通信异常"><span class="nav-number">1.3.1.</span> <span class="nav-text">通信异常</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网络分区"><span class="nav-number">1.3.2.</span> <span class="nav-text">网络分区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三态"><span class="nav-number">1.3.3.</span> <span class="nav-text">三态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#节点故障"><span class="nav-number">1.3.4.</span> <span class="nav-text">节点故障</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从acid到capbase"><span class="nav-number">2.</span> <span class="nav-text">从ACID到CAP/BASE</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#acid"><span class="nav-number">2.0.1.</span> <span class="nav-text">ACID</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#原子性"><span class="nav-number">2.0.1.1.</span> <span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#一致性"><span class="nav-number">2.0.1.2.</span> <span class="nav-text">一致性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#隔离性"><span class="nav-number">2.0.1.3.</span> <span class="nav-text">隔离性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#持久性"><span class="nav-number">2.0.1.4.</span> <span class="nav-text">持久性</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分布式事务"><span class="nav-number">2.0.2.</span> <span class="nav-text">分布式事务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cap和base理论"><span class="nav-number">2.0.3.</span> <span class="nav-text">CAP和BASE理论</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#cap定理"><span class="nav-number">2.0.3.1.</span> <span class="nav-text">CAP定理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#base理论"><span class="nav-number">2.0.3.2.</span> <span class="nav-text">BASE理论</span></a></li></ol></li></ol></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2018</span> <span class="with-love" id="animate"><i class="fa fa-heart"></i> </span><span class="author" itemprop="copyrightHolder">云逸云飞</span></div><div class="busuanzi-count"><script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span class="site-uv" title="总访客量"><i class="fa fa-user"></i> <span class="busuanzi-value" id="busuanzi_value_site_uv"></span> </span><span class="site-pv" title="总访问量"><i class="fa fa-eye"></i> <span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i></div><div id="needsharebutton-float"><span class="btn"><i class="fa fa-share-alt" aria-hidden="true"></i></span></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" color="0,0,255" opacity="0.5" zindex="-1" count="99" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1.0.0/canvas-nest.min.js"></script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script><script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script><script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script><script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script><script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script><link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css"><script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script><script type="text/javascript">function renderGitment(){new Gitmint({id:window.location.pathname,owner:"maoyunfei",repo:"maoyunfei.github.io",lang:navigator.language||navigator.systemLanguage||navigator.userLanguage,oauth:{client_secret:"d8e65bd9b612d87b11e04822e09e4b22b8e1f998",client_id:"6730257a3c2bf3bcc351"}}).render("gitment-container")}renderGitment()</script><script type="text/javascript">// Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });</script><script src="/lib/needsharebutton/needsharebutton.js"></script><script>pbOptions={},pbOptions.iconStyle="box",pbOptions.boxForm="horizontal",pbOptions.position="bottomCenter",pbOptions.networks="Weibo,Wechat,QQZone,Douban,Evernote,Twitter,Facebook,GooglePlus,Linkedin",new needShareButton("#needsharebutton-postbottom",pbOptions),flOptions={},flOptions.iconStyle="box",flOptions.boxForm="horizontal",flOptions.position="middleRight",flOptions.networks="Weibo,Wechat,Douban,QQZone,Twitter,Facebook",new needShareButton("#needsharebutton-float",flOptions)</script><style>.copy-btn{display:inline-block;padding:6px 12px;font-size:13px;font-weight:700;line-height:20px;color:#333;white-space:nowrap;vertical-align:middle;cursor:pointer;background-color:#eee;background-image:linear-gradient(#fcfcfc,#eee);border:1px solid #d5d5d5;border-radius:3px;user-select:none;outline:0}.highlight-wrap .copy-btn{transition:opacity .3s ease-in-out;opacity:0;padding:2px 6px;position:absolute;right:4px;top:8px}.highlight-wrap .copy-btn:focus,.highlight-wrap:hover .copy-btn{opacity:1}.highlight-wrap{position:relative}</style><script>$(".highlight").each(function(t,e){var n=$("<div>").addClass("highlight-wrap");$(e).after(n),n.append($("<button>").addClass("copy-btn").append("复制").on("click",function(t){var e=$(this).parent().find(".code").find(".line").map(function(t,e){return $(e).text()}).toArray().join("\n"),n=document.createElement("textarea");document.body.appendChild(n),n.style.position="absolute",n.style.top="0px",n.style.left="0px",n.value=e,n.select(),n.focus();var o=document.execCommand("copy");document.body.removeChild(n),o?$(this).text("复制成功"):$(this).text("复制失败"),$(this).blur()})).on("mouseleave",function(t){var e=$(this).find(".copy-btn");setTimeout(function(){e.text("复制")},300)}).append(e)})</script></body></html>
