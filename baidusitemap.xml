@@ -4,6 +4,66 @@
 
     
   <url>
+    <loc>https://maoyunfei.github.io/java/f669ed98/</loc>
+    <lastmod>2018-12-19T09:53:24.215Z</lastmod>
+    <data>
+        <display>
+        <title>Java并发编程实战———ThreadLocal深度解析</title>
+        <pubTime>2018-12-05T16:00:00.000Z</pubTime>
+        
+        <tag>Java Concurrency In Practice</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://maoyunfei.github.io/categories/java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://maoyunfei.github.io/java/40578055/</loc>
+    <lastmod>2018-12-19T09:51:58.107Z</lastmod>
+    <data>
+        <display>
+        <title>Java并发编程实战———取消与关闭</title>
+        <pubTime>2018-12-18T16:00:00.000Z</pubTime>
+        
+        <tag>Java Concurrency In Practice</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://maoyunfei.github.io/categories/java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://maoyunfei.github.io/java/7884ea50/</loc>
+    <lastmod>2018-12-14T09:50:29.148Z</lastmod>
+    <data>
+        <display>
+        <title>Java编程思想———类型信息之Class对象</title>
+        <pubTime>2018-11-23T16:00:00.000Z</pubTime>
+        
+        <tag>Thinking in Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://maoyunfei.github.io/categories/java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://maoyunfei.github.io/spring/555f9026/</loc>
     <lastmod>2018-12-12T09:05:55.693Z</lastmod>
     <data>
@@ -70,26 +130,6 @@
         <display>
         <title>Java并发编程实战———基础构建模块</title>
         <pubTime>2018-12-08T16:00:00.000Z</pubTime>
-        
-        <tag>Java Concurrency In Practice</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="https://maoyunfei.github.io/categories/java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://maoyunfei.github.io/java/f669ed98/</loc>
-    <lastmod>2018-12-06T06:39:21.110Z</lastmod>
-    <data>
-        <display>
-        <title>Java并发编程实战———ThreadLocal深度解析</title>
-        <pubTime>2018-12-05T16:00:00.000Z</pubTime>
         
         <tag>Java Concurrency In Practice</tag>
          
@@ -217,26 +257,6 @@
            
              
               <breadCrumb title="Linux" url="https://maoyunfei.github.io/categories/linux/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://maoyunfei.github.io/java/7884ea50/</loc>
-    <lastmod>2018-12-06T06:31:38.061Z</lastmod>
-    <data>
-        <display>
-        <title>Java编程思想———类型信息之Class对象</title>
-        <pubTime>2018-11-23T16:00:00.000Z</pubTime>
-        
-        <tag>Thinking in Java</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="https://maoyunfei.github.io/categories/java/"/>
           
         </display>
     </data>
