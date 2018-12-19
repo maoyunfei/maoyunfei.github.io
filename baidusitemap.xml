@@ -4,12 +4,12 @@
 
     
   <url>
-    <loc>https://maoyunfei.github.io/java/f669ed98/</loc>
-    <lastmod>2018-12-19T09:53:24.215Z</lastmod>
+    <loc>https://maoyunfei.github.io/java/40578055/</loc>
+    <lastmod>2018-12-19T09:58:03.558Z</lastmod>
     <data>
         <display>
-        <title>Java并发编程实战———ThreadLocal深度解析</title>
-        <pubTime>2018-12-05T16:00:00.000Z</pubTime>
+        <title>Java并发编程实战———取消与关闭</title>
+        <pubTime>2018-12-18T16:00:00.000Z</pubTime>
         
         <tag>Java Concurrency In Practice</tag>
          
@@ -24,12 +24,12 @@
 
     
   <url>
-    <loc>https://maoyunfei.github.io/java/40578055/</loc>
-    <lastmod>2018-12-19T09:51:58.107Z</lastmod>
+    <loc>https://maoyunfei.github.io/java/f669ed98/</loc>
+    <lastmod>2018-12-19T09:53:24.215Z</lastmod>
     <data>
         <display>
-        <title>Java并发编程实战———取消与关闭</title>
-        <pubTime>2018-12-18T16:00:00.000Z</pubTime>
+        <title>Java并发编程实战———ThreadLocal深度解析</title>
+        <pubTime>2018-12-05T16:00:00.000Z</pubTime>
         
         <tag>Java Concurrency In Practice</tag>
          
