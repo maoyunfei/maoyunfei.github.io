@@ -4,8 +4,28 @@
 
     
   <url>
+    <loc>https://maoyunfei.github.io/java/7f7f94b4/</loc>
+    <lastmod>2019-01-25T08:14:35.566Z</lastmod>
+    <data>
+        <display>
+        <title>Java并发编程实战———Java内存模型</title>
+        <pubTime>2019-01-24T16:00:00.000Z</pubTime>
+        
+        <tag>Java Concurrency In Practice</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://maoyunfei.github.io/categories/java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://maoyunfei.github.io/java/bdec01ea/</loc>
-    <lastmod>2019-01-22T06:36:43.704Z</lastmod>
+    <lastmod>2019-01-22T06:37:00.877Z</lastmod>
     <data>
         <display>
         <title>Java并发编程实战———AbstractQueuedSynchronizer</title>
@@ -1023,9 +1043,9 @@
         
         <tag>Java基础</tag>
          
-        <tag>CAS</tag>
-         
         <tag>并发</tag>
+         
+        <tag>CAS</tag>
          
          
            
@@ -1347,9 +1367,9 @@
         
         <tag>Java基础</tag>
          
-        <tag>并发</tag>
-         
         <tag>AQS</tag>
+         
+        <tag>并发</tag>
          
          
            

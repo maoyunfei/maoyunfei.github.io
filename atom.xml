@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://maoyunfei.github.io/"/>
-  <updated>2019-01-22T06:36:43.704Z</updated>
+  <updated>2019-01-25T08:14:35.566Z</updated>
   <id>https://maoyunfei.github.io/</id>
   
   <author>
@@ -17,11 +17,33 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Java并发编程实战———Java内存模型</title>
+    <link href="https://maoyunfei.github.io/java/7f7f94b4/"/>
+    <id>https://maoyunfei.github.io/java/7f7f94b4/</id>
+    <published>2019-01-24T16:00:00.000Z</published>
+    <updated>2019-01-25T08:14:35.566Z</updated>
+    
+    <content type="html"><![CDATA[<p><code>Java</code>内存模型是通过各种操作来定义的，包括对变量的读/写操作，监视器的加锁和释放操作，以及线程的启动和合并操作。<code>JMM</code>为程序中所有的操作定义了一个偏序关系，称之为<code>Happens-Before</code>。要想保证执行操作B的线程看到操作A的结果，那么在A和B之间必须满足<code>Happens-Before</code>关系。如果两个操作之间缺乏<code>Happens-Before</code>关系，那么<code>JVM</code>可以对它们任意地重排序。</p><a id="more"></a><blockquote><p><code>Happens-Before</code>的规则包括：</p><p><strong>程序顺序规则</strong>。如果程序中操作A在操作B之前，那么在线程中A操作将在B操作之前执行。</p><p><strong>监视器锁规则</strong>。在监视器上的解锁操作必须在同一个监视器锁上的加锁操作之前执行。</p><p><strong>volatile变量规则</strong>。对<code>volatile</code>变量的写入操作必须在对该变量的读操作之前执行。</p><p><strong>线程启动规则</strong>。在线程上对<code>Thread.start</code>的调用必须在该线程中执行任何操作之前执行。</p><p><strong>线程结束规则</strong>。线程中的任何操作都必须在其他线程检测到该线程已经结束之前执行，或者从<code>Thread.join</code>中成功返回，或者在调用<code>Thread.isAlive</code>时返回<code>false</code>。</p><p><strong>中断规则</strong>。当一个线程在另一个线程上调用<code>interrupt</code>时，必须在被中断线程检测到<code>interrupt</code>调用之前执行（通过抛出<code>InterruptedException</code>，或者调用<code>isInterrupted</code>和<code>interrupted</code>）。</p><p><strong>终结器规则</strong>。对象的构造函数必须在启动该对象的终结器之前执行完成。</p><p><strong>传递性</strong>。如果操作A在操作B之前执行，并且操作B在操作C之前执行，那么操作A必须在操作C之前执行。</p></blockquote>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;code&gt;Java&lt;/code&gt;内存模型是通过各种操作来定义的，包括对变量的读/写操作，监视器的加锁和释放操作，以及线程的启动和合并操作。&lt;code&gt;JMM&lt;/code&gt;为程序中所有的操作定义了一个偏序关系，称之为&lt;code&gt;Happens-Before&lt;/code&gt;。要想保证执行操作B的线程看到操作A的结果，那么在A和B之间必须满足&lt;code&gt;Happens-Before&lt;/code&gt;关系。如果两个操作之间缺乏&lt;code&gt;Happens-Before&lt;/code&gt;关系，那么&lt;code&gt;JVM&lt;/code&gt;可以对它们任意地重排序。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Java" scheme="https://maoyunfei.github.io/categories/java/"/>
+    
+    
+      <category term="Java Concurrency In Practice" scheme="https://maoyunfei.github.io/tags/Java-Concurrency-In-Practice/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java并发编程实战———AbstractQueuedSynchronizer</title>
     <link href="https://maoyunfei.github.io/java/bdec01ea/"/>
     <id>https://maoyunfei.github.io/java/bdec01ea/</id>
     <published>2019-01-21T16:00:00.000Z</published>
-    <updated>2019-01-22T06:36:43.704Z</updated>
+    <updated>2019-01-22T06:37:00.877Z</updated>
     
     <content type="html"><![CDATA[<p>在基于<code>AQS</code>构建的同步器类中，最基本的操作包括各种形式的获取操作和释放操作。获取操作是一种依赖状态的操作，并且通常会阻塞。当使用锁或信号量时，“获取”操作的含义即获取的是锁或者许可，并且调用者可能会一直等待直到同步器类处于可被获取的状态。在使用<code>CountDownLatch</code>时，“获取”操作意味着“等待并直到闭锁到达结束状态”，而在使用<code>FutureTask</code>时，则意味着“等待并直到任务已经完成”。“释放”并不是一个可阻塞的操作，当执行“释放”操作时，所有在请求时被阻塞的线程都会开始执行。</p><a id="more"></a><p>如果一个类想成为状态依赖的类，那么它必须拥有一些状态。<code>AQS</code>负责管理同步器类中的状态，它管理了一个整数状态信息，可以通过<code>getState</code>，<code>setState</code>以及<code>compareAndSetState</code>等<code>protected</code>类型方法来进行操作。这个整数可以用于表示任意状态。例如，<code>ReentrantLock</code>用它来表示所有者线程已经重复获取该锁的次数，<code>Semaphore</code>用它来表示剩余的许可数量，<code>FutureTask</code>用它来表示任务的状态（尚未开始、正在运行、已完成以及已取消）。在同步器类中还可以自行管理一些额外的状态变量，例如，<code>ReentrantLock</code>保存了锁的当前所有者的信息，这样就能区分某个获取操作是重入的还是竞争的。</p><p>一个获取操作包括两部分。首先，同步器类判断当前状态是否允许获得操作，如果是，则允许线程执行，否则获取操作将阻塞或失败。其次，就是更新同步器的状态，获取同步器的某个线程可能会对其他线程能否也获取该同步器造成影响。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AQS中获取操作和释放操作的标准形式</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">acquire</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (当前状态不允许获取操作) &#123;</span><br><span class="line">        <span class="keyword">if</span> (需要阻塞获取请求) &#123;</span><br><span class="line">            如果当前线程不在队列中，则将其插入队列</span><br><span class="line">            阻塞当前线程</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            返回失败</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    可能更新同步器的状态</span><br><span class="line">    如果线程位于队列中，则将其移除队列</span><br><span class="line">    返回成功</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">release</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    更新同步器的状态</span><br><span class="line">    <span class="keyword">if</span> (新的状态允许某个被阻塞的线程获取成功) &#123;</span><br><span class="line">        解除队列中一个或多个线程的阻塞状态</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>如果某个同步器支持独占的获取操作，那么需要实现一些保护方法，包括<code>tryAcquire</code>、<code>tryRelease</code>和<code>isHeldExclusively</code>等，而对于共享获取的同步器，则应该实现<code>tryAcquireShared</code>和<code>tryReleaseShared</code>等方法。<code>AQS</code>中的<code>accquire</code>、<code>acquireShared</code>、<code>release</code>和<code>releaseShared</code>等方法都将调用这些方法在子类中带有<code>try</code>的版本来判断某个操作是否能执行。在同步器的子类中，可以根据其获取操作和释放操作的语义，使用<code>getState</code>、<code>setSate</code>以及<code>compareAndSetSate</code>来检查和更新状态，并通过返回的状态值来告知基类“获取”或“释放”同步器的操作是否成功。</p>]]></content>
     
@@ -424,28 +446,6 @@
     <summary type="html">
     
       &lt;h3 id=&quot;java访问权限&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#java访问权限&quot;&gt;&lt;/a&gt; Java访问权限&lt;/h3&gt;&lt;p&gt;下表为Java访问控制符的含义和使用情况&lt;/p&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th style=&quot;text-align:center&quot;&gt;同一类&lt;/th&gt;&lt;th style=&quot;text-align:center&quot;&gt;同一包中的类&lt;/th&gt;&lt;th style=&quot;text-align:center&quot;&gt;子类&lt;/th&gt;&lt;th style=&quot;text-align:center&quot;&gt;其他包中的类&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;public&lt;/code&gt;&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✔️&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✔️&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✔️&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✔️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;protected&lt;/code&gt;&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✔️&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✔️&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✔️&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✖️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;default&lt;/code&gt;&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✔️&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✔️&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✖️&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✖️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;private&lt;/code&gt;&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✔️&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✖️&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✖️&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;✖️&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;&lt;code&gt;public&lt;/code&gt; &amp;gt; &lt;code&gt;protected&lt;/code&gt; &amp;gt; 同包(&lt;code&gt;default&lt;/code&gt;) &amp;gt; &lt;code&gt;private&lt;/code&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Java" scheme="https://maoyunfei.github.io/categories/java/"/>
-    
-    
-      <category term="Thinking in Java" scheme="https://maoyunfei.github.io/tags/Thinking-in-Java/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java编程思想———初始化与清理</title>
-    <link href="https://maoyunfei.github.io/java/a2c6556/"/>
-    <id>https://maoyunfei.github.io/java/a2c6556/</id>
-    <published>2018-09-27T16:00:00.000Z</published>
-    <updated>2018-12-06T06:31:37.967Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="默认构造器"><a class="markdownIt-Anchor" href="#默认构造器"></a> 默认构造器</h3><p>默认构造器(又名无参构造器)是没有形式参数的，它的作用是创建一个“默认对象”。如果你写的类中没有构造器，则编译器会自动帮你创建一个默认构造器。</p><p>如果已经定义了一个构造器，编译器就不会帮你自动创建默认构造器。</p><a id="more"></a><h3 id="在构造器中调用构造器"><a class="markdownIt-Anchor" href="#在构造器中调用构造器"></a> 在构造器中调用构造器</h3><p>可能为一个类写了多个构造器，有时可能想在一个构造器中调用另一个构造器，以避免重复代码。可用<code>this</code>关键字做到这一点。</p><p><strong>尽管可以用<code>this</code>调用一个构造器，但却不能调用两个。此外，必须将构造器调用置于最起始处，否则编译会报错。</strong></p><h3 id="垃圾回收"><a class="markdownIt-Anchor" href="#垃圾回收"></a> 垃圾回收</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">finalize</span><span class="params">()</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.finalize();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>垃圾回收器会特别对待覆盖了<code>finalize()</code>方法的对象。一般情况下，在垃圾回收期间，一个无法触及的对象会立即被销毁。不过，覆盖了<code>finalize()</code>方法的对象会被移动到一个队列(F-Queue)里，一个独立的线程遍历这个队列，调用每一个对象的<code>finalize()</code>方法。在<code>finalize()</code>方法调用结束之后，这些对象才成为真正的垃圾，等待下一轮垃圾回收。</p><p>一个对象的<code>finalize()</code>方法只会被调用一次，而且<code>finalize()</code>被调用不意味着gc会立即回收该对象，所以有可能调用<code>finalize()</code>后，该对象又不需要被回收了，然后到了真正要被回收的时候，因为前面调用过一次，所以不会调用<code>finalize()</code>，产生问题。</p><p>不该将<code>finalize()</code>作为通用的清理方法，<code>finalize()</code>是一个用于释放非Java资源的方法。</p><p>之所以要有<code>finalize()</code>，是由于在分配内存时可能采用了类似C语言中的做法，而非Java中的通常做法。这种情况主要发生在使用“本地方法”的情况下，本地方法是一种在Java中调用非本地代码的方式。</p><h3 id="初始化"><a class="markdownIt-Anchor" href="#初始化"></a> 初始化</h3><p>初始化的顺序是先静态对象（如果它们尚未因前面的对象创建过程而被初始化），而后是“非静态”对象。<strong>静态初始化动作只进行一次。</strong></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;默认构造器&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#默认构造器&quot;&gt;&lt;/a&gt; 默认构造器&lt;/h3&gt;&lt;p&gt;默认构造器(又名无参构造器)是没有形式参数的，它的作用是创建一个“默认对象”。如果你写的类中没有构造器，则编译器会自动帮你创建一个默认构造器。&lt;/p&gt;&lt;p&gt;如果已经定义了一个构造器，编译器就不会帮你自动创建默认构造器。&lt;/p&gt;
     
     </summary>
     
